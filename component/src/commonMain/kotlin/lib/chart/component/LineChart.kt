@@ -1,7 +1,5 @@
 package lib.chart.component
 
-import android.graphics.Paint
-import android.graphics.Typeface
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -22,15 +20,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.asAndroidPath
-import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.roundToInt
 
 @Composable
@@ -61,6 +61,8 @@ fun LineChart(
             }
         )
     }
+
+    val markerTextMeasurer = rememberTextMeasurer()
 
     val upperValue = remember(key1 = data) {
         (data.maxOfOrNull { it.y }?.let { it + it * 0.05f } ?: 0f)
@@ -141,7 +143,8 @@ fun LineChart(
                     }
                 }
             }
-            val fillPath = android.graphics.Path(strokePath.asAndroidPath()).asComposePath().apply {
+            val fillPath = Path().apply {
+                addPath(strokePath)
                 lineTo(axisLeft + chartWidth, axisBottom)
                 lineTo(axisLeft, axisBottom)
                 close()
@@ -272,21 +275,26 @@ fun LineChart(
                         center = Offset(cx, cy)
                     )
 
-                    val labelPaint = Paint().apply {
-                        color = markerColor.toArgb()
-                        textAlign = Paint.Align.CENTER
-                        isAntiAlias = true
-                        textSize = 12.dp.toPx()
-                        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
-                    }
                     val value =
                         (lowerValue + ((axisBottom - cy) / chartHeight) * (upperValue - lowerValue)).roundToInt()
-                    val textY = cy - 8.dp.toPx()
-                    drawContext.canvas.nativeCanvas.drawText(
-                        value.toString(),
-                        cx,
-                        textY,
-                        labelPaint
+
+                    val layout = markerTextMeasurer.measure(
+                        text = AnnotatedString(text = value.toString()),
+                        style = TextStyle(
+                            color = markerColor,
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center,
+                        ),
+                    )
+                    val textLeft = cx - layout.size.width / 2f
+                    val textTop = cy - outerRadius - 6.dp.toPx() - layout.size.height
+
+                    drawText(
+                        textLayoutResult = layout,
+                        topLeft = Offset(
+                            x = textLeft.coerceIn(0f, size.width - layout.size.width.toFloat()),
+                            y = textTop.coerceAtLeast(0f)
+                        )
                     )
                 }
             }
