@@ -33,3 +33,4 @@ plugins {
 }
 
 include(":sample:composeApp")
+include(":component")
