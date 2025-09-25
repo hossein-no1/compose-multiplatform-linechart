@@ -21,7 +21,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "ChartLineSample"
             isStatic = true
         }
     }
@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation(project(":component"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
