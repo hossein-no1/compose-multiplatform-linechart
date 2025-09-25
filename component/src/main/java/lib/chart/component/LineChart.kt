@@ -7,10 +7,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,12 +48,14 @@ fun LineChart(
             when {
                 strokeColor != null -> strokeColor
                 ((data.lastOrNull()?.y ?: 0f) - (data.firstOrNull()?.y
-                    ?: 0f)) in (0f..thresholdValue) -> Color.parse("#D1D11C")
+                    ?: 0f)) in (0f..thresholdValue) -> Color(0xFFD1D11C)
 
                 ((data.lastOrNull()?.y ?: 0f) - (data.firstOrNull()?.y
-                    ?: 0f)) < thresholdValue -> Color.parse("#D11D1D")
+                    ?: 0f)) < thresholdValue -> Color(0xFFD11D1D)
 
-                ((data.lastOrNull()?.y ?: 0f) - (data.firstOrNull()?.y ?: 0f)) > 0 -> Color.parse("#1CD1A1")
+                ((data.lastOrNull()?.y ?: 0f) - (data.firstOrNull()?.y ?: 0f)) > 0 -> Color(
+                    0xFF1CD1A1
+                )
 
                 else -> Color.Yellow
             }
@@ -80,7 +80,6 @@ fun LineChart(
     var selectedX by remember { mutableStateOf<Float?>(null) }
 
     Box(modifier = modifier, contentAlignment = alignment) {
-
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
@@ -296,26 +295,26 @@ fun LineChart(
 
 }
 
-@Preview
+
+@Preview(showBackground = true)
 @Composable
-fun ChartPreview() {
-    MaterialTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            LineChart(
-                data = listOf(
-                    ChartData(x = 5.2f, y = 1f),
-                    ChartData(x = 12.1f, y = 1f),
-                    ChartData(x = 2.3f, y = 1f),
-                    ChartData(x = 6.1f, y = 1f),
-                    ChartData(x = 7.2f, y = 1f),
-                    ChartData(x = 3.0f, y = 1f),
-                ),
-            )
-        }
+fun LineChartPreview() {
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+        LineChart(
+            modifier = Modifier.fillMaxSize(),
+            data = listOf(
+                ChartData(x = 1f, y = 2f),
+                ChartData(x = 2f, y = 3f),
+                ChartData(x = 3f, y = 5f),
+                ChartData(x = 4f, y = 4f),
+                ChartData(x = 5f, y = 1f),
+                ChartData(x = 6f, y = 2f),
+                ChartData(x = 7f, y = 3f),
+                ChartData(x = 8f, y = 5f),
+                ChartData(x = 9f, y = 4f),
+                ChartData(x = 10f, y = 1f),
+            ),
+            markerColor = Color.White
+        )
     }
 }
