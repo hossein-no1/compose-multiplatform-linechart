@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import linechart.composeapp.generated.resources.Res
-import linechart.composeapp.generated.resources.compose_multiplatform
+import linechart.sample.composeapp.generated.resources.Res
+import linechart.sample.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 @Preview
