@@ -28,6 +28,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -39,6 +40,7 @@ fun LineChart(
     alignment: Alignment = Alignment.Center,
     data: List<ChartData>,
     strokeColor: Color? = null,
+    markerTextsize: TextUnit = 14.sp,
     markerColor: Color = Color.Black,
 ) {
 
@@ -98,12 +100,11 @@ fun LineChart(
                 }
         ) {
             val leftPadding = 0f
-            val rightPadding = 16.dp.toPx()
             val topPadding = 16.dp.toPx()
             val bottomPadding = 32.dp.toPx()
 
             val axisLeft = leftPadding
-            val axisRight = size.width - rightPadding
+            val axisRight = size.width
             val axisTop = topPadding
             val axisBottom = size.height - bottomPadding
 
@@ -282,7 +283,7 @@ fun LineChart(
                         text = AnnotatedString(text = value.toString()),
                         style = TextStyle(
                             color = markerColor,
-                            fontSize = 12.sp,
+                            fontSize = markerTextsize,
                             textAlign = TextAlign.Center,
                         ),
                     )
