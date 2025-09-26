@@ -59,7 +59,7 @@ fun LineChart(
                     0xFF1CD1A1
                 )
 
-                else -> Color.Yellow
+                else -> Color(0xFFD1D11C)
             }
         )
     }
