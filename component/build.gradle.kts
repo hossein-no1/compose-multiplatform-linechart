@@ -9,8 +9,8 @@ plugins {
     alias(libs.plugins.vanniktech.mavenPublish)
 }
 
-group = (findProperty("group") as String?) ?: "com.github.hossein-no1"
-version = (findProperty("version") as String?) ?: "1.0.0"
+group = "io.github.hossein-no1"
+version = "1.0.0"
 
 mavenPublishing {
     publishToMavenCentral()
