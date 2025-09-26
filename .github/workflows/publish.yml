@@ -1,63 +1,34 @@
-name: Publish
+name: Publish to Maven Central
+
 on:
   workflow_dispatch:
-    inputs:
-      versionName:
-        description: '1.0.0'
-        required: true
+  push:
+    tags:
+      - "v*"
 
 jobs:
   publish:
-    name: Publish
     runs-on: macos-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'adopt'
+          distribution: temurin
+          java-version: 17
 
-      - name: Grant Permission to Execute Gradle
-        run: chmod +x gradlew
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
-
-      - name: Publish Library
+      - name: Publish (snapshot or release)
+        env:
+          ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
+          ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
+          ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
+          ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
         run: |
-          echo "Publishing and Releasing library 🚀"
-          ./gradlew publish
-          echo "Published and Released ✅"
-        env:
-          ORG_GRADLE_PROJECT_VERSION_NAME: ${{ github.event.inputs.versionName }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
-
-      - name: Create and push tag
-        run: |
-          git config --global user.email "hpleo0938@gmail.com"
-          git config --global user.name "$GITHUB_ACTOR"
-
-          git tag -a $TAG -m "Release v$TAG"
-          git push origin $TAG
-        env:
-          TAG: ${{ github.event.inputs.versionName }}
-
-      - name: Create Release on GitHub
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.inputs.versionName }}
-          release_name: ${{ github.event.inputs.versionName }}
-          draft: true
-          prerelease: false
+          ./gradlew :component:publish --stacktrace
+          # If using Nexus publish plugin, uncomment the next line:
+          # ./gradlew closeAndReleaseSonatypeStagingRepository --stacktrace
