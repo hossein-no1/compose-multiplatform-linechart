@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -7,18 +6,42 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.androidLibrary)
-    id("maven-publish")
+    alias(libs.plugins.vanniktech.mavenPublish)
 }
 
 group = (findProperty("group") as String?) ?: "com.github.hossein-no1"
 version = (findProperty("version") as String?) ?: "1.0.0"
 
-publishing {
-    publications.withType<org.gradle.api.publish.maven.MavenPublication>().configureEach {
-        artifactId = "compose-multiplatform-linechart"
-        pom {
-            name.set("Compose Multiplatform LineChart")
-            description.set("Simple, lightweight line chart components for Compose Multiplatform.")
+mavenPublishing {
+    publishToMavenCentral()
+
+    signAllPublications()
+
+    coordinates(group.toString(), "library", version.toString())
+
+    pom {
+        name = "Compose Multiplatform LineChart"
+        description = "Simple, lightweight line chart components for Compose Multiplatform."
+        inceptionYear = "2025"
+        url = "https://github.com/hossein-no1/compose-multiplatform-linechart/"
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "hossein-no1"
+                name = "Hosen"
+                url = "https://github.com/hossein-no1"
+            }
+        }
+        scm {
+            url = "https://github.com/hossein-no1/compose-multiplatform-linechart/"
+            connection = "scm:git:git://github.com/hossein-no1/compose-multiplatform-linechart.git"
+            developerConnection = "scm:git:ssh://git@github.com/hossein-no1/compose-multiplatform-linechart.git"
         }
     }
 }
