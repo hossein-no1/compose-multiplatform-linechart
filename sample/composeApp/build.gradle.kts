@@ -16,13 +16,10 @@ kotlin {
         }
     }
 
-    val onIntelHost = System.getProperty("os.arch").contains("x86_64")
-    val iosTargets = buildList {
-        add(iosArm64())
-        add(iosSimulatorArm64())
-        if (onIntelHost) add(iosX64())
-    }
-    iosTargets.forEach { iosTarget ->
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
