@@ -7,6 +7,20 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.androidLibrary)
+    id("maven-publish")
+}
+
+group = (findProperty("group") as String?) ?: "com.github.hossein-no1"
+version = (findProperty("version") as String?) ?: "1.0.0"
+
+publishing {
+    publications.withType<org.gradle.api.publish.maven.MavenPublication>().configureEach {
+        artifactId = "compose-multiplatform-linechart"
+        pom {
+            name.set("Compose Multiplatform LineChart")
+            description.set("Simple, lightweight line chart components for Compose Multiplatform.")
+        }
+    }
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -17,13 +31,16 @@ kotlin {
         }
     }
 
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "LineChart"
-            isStatic = true
+    val isMacOs = System.getProperty("os.name").lowercase().contains("mac")
+    if (isMacOs) {
+        listOf(
+            iosArm64(),
+            iosSimulatorArm64()
+        ).forEach { iosTarget ->
+            iosTarget.binaries.framework {
+                baseName = "LineChart"
+                isStatic = true
+            }
         }
     }
 
