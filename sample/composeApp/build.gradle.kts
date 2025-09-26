@@ -15,14 +15,16 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ChartLineSample"
+            baseName = "ComposeApp"
             isStatic = true
+            binaryOption("bundleId", "lib.chart.line")
         }
     }
     
