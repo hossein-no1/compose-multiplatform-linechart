@@ -35,7 +35,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(project(":component"))
+            implementation("io.github.hossein-no1:library:1.0.0")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
